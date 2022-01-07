@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>出错了</title>
+</head>
+<body>
+<link rel="stylesheet" href="css/index.css">
+<img class="error-img" src="/static/images/404error.png" alt="出错啦"/>
+<p class="copyright-error" th:text="${#request.getAttribute('copyright')}"></p>
+</body>
+</html>

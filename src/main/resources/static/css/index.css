@@ -1,0 +1,193 @@
+.block {
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 173px;
+    /*将从数据库中输出的数据并排显示*/
+    display: inline-table;
+}
+
+/*body{
+    background-repeat: no-repeat;
+    width: 1100px;
+    height: 800px;
+    padding-right: 100px;
+}*/
+.price {
+    font-weight: 400;
+    color: crimson;
+    font-family: fantasy;
+    font-size: larger;
+}
+
+.book-font {
+    color: crimson;
+    padding-top: 5px;
+    font-size: smaller;
+}
+
+.book-operate {
+    color: crimson;
+    /*    text-decoration是文字修饰效果的意思；
+        none参数表示超链接文字不显示下划线；
+        underline参数表示超链接的文字有下划线*/
+    text-decoration: none;
+    border-style: solid;
+    padding: 2px 3px;
+}
+
+.cart {
+    color: crimson;
+    text-decoration: none;
+}
+
+.cart-img {
+    width: 20px;
+    height: 29px;
+    vertical-align: bottom;
+    padding-top: 10px;
+}
+
+.cart2-img {
+    width: 50px;
+    height: 41px;
+    position: fixed;
+    top: 75px;
+    right: 51px;
+}
+
+.error-img {
+    width: 1100px;
+    height: 800px;
+    padding-left: 250px;
+    padding-right: 100px;
+    position: fixed;
+}
+
+.empty-img {
+    width: 1100px;
+    height: 800px;
+    padding-left: 250px;
+    padding-right: 100px;
+}
+
+.login-form {
+    width: 100%;
+    text-align: center;
+    position: relative;
+    margin-top: 25px;
+}
+
+.user-login {
+    text-align: center;
+    position: relative;
+    top: 16px;
+    right: 82px;
+    color: #7d7977;
+    font-size: larger;
+}
+
+.user-logout {
+    position: relative;
+    color: #7d7977;
+    bottom: 5px;
+    right: 24px;
+}
+
+/*a:focus{
+    text-decoration: none;
+}*/
+.summprice {
+    color: crimson;
+    font-family: fantasy;
+    position: fixed;
+    right: 52px;
+    top: 121px;
+    font-size: initial;
+}
+
+.cart-price {
+    text-align: center;
+}
+
+.login-container {
+    /*position: absolute;*/
+    position: fixed;
+    background: #e9cccc;
+    width: 292px;
+    height: 243px;
+    left: 668px;
+    border: groove;
+    border-radius: 4px;
+    top: 260px;
+}
+
+.label {
+    position: fixed;
+    left: 684px;
+}
+
+label.error {
+
+
+    color: #EA5200;
+}
+
+.copyright {
+    font-size: initial;
+    color: grey;
+    font-family: auto;
+    text-align: center;
+    /*position: relative;*/
+    position: fixed;
+    /*top: 335px;*/
+    bottom: 11px;
+    left: 589px;
+}
+
+.copyright2 {
+    font-size: initial;
+    color: grey;
+    font-family: auto;
+    text-align: center;
+    /*position: relative;*/
+    position: fixed;
+    top: 811px;
+    left: 589px;
+}
+
+.copyright3 {
+    font-size: initial;
+    color: grey;
+    font-family: auto;
+    text-align: center;
+    /*position: relative;*/
+    position: fixed;
+    /*top: 307px;*/
+    left: 589px;
+    bottom: 11px;
+
+}
+
+.copyright-error {
+    font-size: initial;
+    color: grey;
+    font-family: auto;
+    text-align: center;
+    position: relative;
+    top: 798px;
+}
+
+.line {
+    position: relative;
+    top: 328px;
+}
+
+.line2 {
+    position: relative;
+    top: 801px;
+}
+
+.line3 {
+    position: relative;
+    top: 298px;
+}

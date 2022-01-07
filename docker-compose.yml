@@ -1,0 +1,37 @@
+version: '3.8'
+#三个服务  app  rabbitmq  redis
+services:
+  app:
+    build: .
+    image: murphy
+    container_name: murphy_app
+    depends_on:
+      - rabbitmq
+      - redis
+      - mysql
+    ports:
+      - "8083:8080"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq1
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "15671:15671"
+
+  redis:
+    image: redis
+    container_name: redis1
+    ports:
+      - "6380:6379"
+  mysql:
+    image: mysql
+    ports:
+      - "3306:3306"
+    container_name: mysql1
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+    volumes:
+      - /home/ubuntu/javacode2/mysql/data:/var/lib/mysql
+      - /home/ubuntu/javacode2/mysql/config:/etc/mysql/conf.d

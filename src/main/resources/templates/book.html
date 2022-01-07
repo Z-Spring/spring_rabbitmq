@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<tr th:each="book:${booklist}">
+    <td th:text="${book.name}">书名</td>
+    <td th:text="${book.price}">价钱</td>
+</tr>
+<input type="text" id="name"></input>
+</body>
+</html>

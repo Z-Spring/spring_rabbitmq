@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.js"></script>
+    <script>
+        $(function () {
+            $('title').text('信息');
+            $('#bookinfo_msg').click(function () {
+                $.get('/bookinfo',{
+                    name:'zhang',
+                }).done(function (data) {
+                   $('#pp').text(data);
+                    console.log(data);
+                });
+            })
+
+        })
+    </script>
+</head>
+<body>
+<div id="book_info">
+    <p>this is China</p>
+    <p id="bookinfo_msg">999</p>
+</div>
+<p id="pp">pp</p>
+
+</body>
+</html>
