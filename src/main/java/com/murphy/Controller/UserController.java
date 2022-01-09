@@ -107,7 +107,7 @@ public class UserController {
             String pwd = DigestUtils.md5DigestAsHex(password.getBytes("UTF-8"));
             user.setPassword(pwd);
             user.setEmail(email);
-            if (getUserFromRedis(email) == null) {
+            if (getUserFromRedis(name) == null) {
                 log.info("从数据库中获取数据");
                 long begin = System.currentTimeMillis();
                 log.info("开始时间: {}", begin);
@@ -116,7 +116,7 @@ public class UserController {
                     log.info("database结束时间: {}", end);
                     //注意：这里是HttpSession
                     session.setAttribute("user", user);
-                    putUserIntoRedis(user, email);
+                    putUserIntoRedis(user, name);
                     log.info("login success, username:{}, password:{}", name, pwd);
 //                  session.setMaxInactiveInterval(30*60);   设置session的过期时间  单位：秒
                     messagingService.sendLoginMessage(LoginMessage.of(user.getEmail(), user.getName(), true));
@@ -134,7 +134,8 @@ public class UserController {
             } else {
                 long end2 = System.currentTimeMillis();
                 log.info("缓存结束时间 {}", end2);
-                session.setAttribute("user", user);//注意：这里是HttpSession
+                //注意：这里是HttpSession
+                session.setAttribute("user", user);
                 log.info("从缓存中查询数据");
                 log.info("login success, username: {}, password: {}", name, pwd);
                 messagingService.sendLoginMessage(LoginMessage.of(user.getEmail(), user.getName(), true));
@@ -148,30 +149,45 @@ public class UserController {
         }
     }
 
-    //把user写进Redis
-    public void putUserIntoRedis(Object user, String email) throws JsonProcessingException {
+    /**
+     * 把user写进Redis
+     * @param user  用户登录数据
+     * @param name  根据name来查询用户数据
+     * @throws JsonProcessingException
+     */
+    public void putUserIntoRedis(Object user, String name) throws JsonProcessingException {
         user = objectMapper.writeValueAsString(user);
-        redisUtil.hset("user", email, user);
+        redisUtil.hset("user", name, user);
         log.info("将数据存储到Redis中");
     }
     //从Redis中取出User
 
     /**
+     * key :String   value: Json
      * 登录时，先从缓存中获取信息，如果缓存中没有的话，再从数据库中获取
      */
-    //key :String   value: Json
-    public Object getUserFromRedis(String email) {
-        log.info("从Redis中获取数据 {}", redisUtil.hget("user", email));
-        return redisUtil.hget("user", email);
+    public Object getUserFromRedis(String name) {
+        //注意，这里二元运算符是==null,两个等号
+        Object obj=redisUtil.hget("user", name)==null?"没有从Redis中获取到数据":"从Redis中获取到数据！";
+        log.info("{}", obj);
+        return redisUtil.hget("user", name);
     }
 
+    /**
+     * 注销用户
+     * @param session
+     * @return
+     */
     @GetMapping(value = "/logout")
     public ModelAndView logout(HttpSession session) {
         session.removeAttribute("user");
         return new ModelAndView("redirect:base");
     }
 
-    //    注册
+    /**
+     * register GET
+     * @return
+     */
     @GetMapping(value = "/register")
     public ModelAndView register() {
         return new ModelAndView("register");
@@ -179,7 +195,8 @@ public class UserController {
 
     @PostMapping(value = "/register")
     public ModelAndView doRegister(@RequestParam("name") String name, @RequestParam("password") String password, @RequestParam("email") String email) {
-        long date = System.currentTimeMillis();//获取时间戳
+        //获取时间戳
+        long date = System.currentTimeMillis();
         String uid2 = "u-" + date;
         User user = new User();
         user.setUid2(uid2);
@@ -193,6 +210,11 @@ public class UserController {
         return new ModelAndView("register");
     }
 
+    /**
+     * 验证email合规性，这个一般在前端页面验证
+     * @param email
+     * @return
+     */
     public boolean judgeRegex(String email) {
         String regex = "^[\\w+\\.]+\\@\\w+" +
                 "\\.(com|.org)$";

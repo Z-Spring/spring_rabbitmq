@@ -9,6 +9,11 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+/**
+ * 修改Redis键值对的类型
+ * TODO:但是修改后好像不奏效？
+ * @author Murphy
+ */
 @Configuration
 public class RedisConfig {
     @Bean
