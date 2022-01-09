@@ -203,11 +203,37 @@ public class UserController {
         user.setName(name);
         user.setPassword(password);
         user.setEmail(email);
-        if (userService.register(user)) {
-            log.info("注册成功,username: {}, password: {}", name, password);
-            return new ModelAndView("redirect:/base");
+        if (putNameToRedis(name)){
+            if (userService.register(user)) {
+                log.info("注册成功,username: {}, password: {}", name, password);
+                return new ModelAndView("redirect:/base");
+            }
+            return new ModelAndView("register");
+        }else{
+            Map<String, String> model=new HashMap();
+            model.put("message","用户名重复！请重新输入");
+            return new ModelAndView("register",model);
         }
-        return new ModelAndView("register");
+
+    }
+
+    /**
+     * 将注册的用户名放到Redis中，来识别注册的用户名是否重复
+     * 之所以没有在注册方法那里设置，是因为user数据库中uid是主键
+     * @param name 用户名
+     */
+    public boolean putNameToRedis(String name){
+        if (redisUtil.sSet("username",name)==1){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 将用户名从Redis中取出
+     */
+    public void getNameFromRedis(){
+        redisUtil.sGet("username");
     }
 
     /**
