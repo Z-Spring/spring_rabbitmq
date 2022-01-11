@@ -59,7 +59,7 @@ public class UserController {
             model.addAttribute("bookList", bookService.getBook());
             model.addAttribute("price", bookService.getPrice(uid));
             model.addAttribute("pid",bookController.getProduceFromRedis(user.getName()));
-            model.addAttribute("HasThisProduct","近期加购物车商品");
+            model.addAttribute("HasThisProduct","近期加过购物车商品");
         } else {
             request.setAttribute("name", bookService.getBook());
             model.addAttribute("bookList", bookService.getBook());

@@ -107,6 +107,11 @@ public class BookController {
         log.info("name:{}", name);
     }
 
+    /**
+     * 这里利用Redis的list类型，name为key ,pid为value
+     * @param name   key
+     * @param pid   value
+     */
     public void putProduceIntoRedis(String name,int pid){
         redisTemplate.opsForList().rightPush(name,pid);
         log.info("添加pid成功");
