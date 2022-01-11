@@ -76,4 +76,8 @@ public class BookService {
         }
         return bookMapper.getPrice(uid);
     }
+
+    public List getPidFromBookInfo(){
+        return bookMapper.getPidFromBookInfo();
+    }
 }

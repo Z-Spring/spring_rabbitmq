@@ -7,10 +7,20 @@ import org.apache.ibatis.annotations.*;
 import java.lang.reflect.Array;
 import java.util.List;
 
+/**
+ * @author Murphy
+ */
 @Mapper
 public interface BookMapper {
     @Select("select * from bookinfo")
     List<Book> display();
+
+    /**
+     * 从bookinfo中取出所有pid
+     * @return
+     */
+    @Select("SELECT pid FROM bookinfo")
+    List <Integer> getPidFromBookInfo();
 
     @Select("select * from bookinfo WHERE pid=#{pid}")
     Book display2(@Param("pid") int pid);
@@ -19,6 +29,12 @@ public interface BookMapper {
     int count(@Param("pid") int pid, @Param("count") int count, @Param("summprice") double summprice, @Param("uid") int uid);
 
     //    查询不同用户的购物车，SQL语句用的不熟练
+
+    /**
+     *
+     * @param uid
+     * @return
+     */
     @Select("SELECT bookinfo.name,bookinfo.price,bookinfo.imgpath FROM bookinfo,cart WHERE cart.uid=#{uid} AND cart.pid=bookinfo.pid")
     List<Book> getCart(@Param("uid") int uid);
 
@@ -27,6 +43,12 @@ public interface BookMapper {
     List<Integer> getId();
 
     //    根据uid寻找pid  这个没办法了，后面单独添加的uid，全改的话真的改不完了。。。只能单独增加一个方法了
+
+    /**
+     *查询用户购物车中所有pid
+     * @param uid
+     * @return
+     */
     @Select("SELECT pid FROM cart WHERE uid=#{uid}")
     List<Integer> getId2(@Param("uid") int uid);
 

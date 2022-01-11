@@ -2,8 +2,12 @@ package com.murphy.springboot_rebbitmq;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.murphy.Controller.BookController;
+import com.murphy.Controller.UserController;
 import com.murphy.Utils.RedisUtil;
 import com.murphy.entity.User;
+import com.murphy.mapper.BookMapper;
+import com.murphy.service.BookService;
 import com.murphy.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
@@ -33,38 +37,29 @@ public class SpringRabbitmqApplicationTests {
     @Autowired
     UserService userService;
     @Autowired
+    BookService bookService;
+    @Autowired
     RedisTemplate redisTemplate;
     @Autowired
     ObjectMapper objectMapper;
-    /**
-     * 首先从缓存中查询数据，如果查不到的话再从数据库中查询，同时也要将查询到的数据放到Redis中
-     */
+    @Autowired
+    UserController userController;
+    @Autowired
+    BookController bookController;
+    @Autowired
+    BookMapper bookMapper;
+    @Disabled
     @Test
-    Object testRedis(String name){
-        Object obj=redisUtil.get("name");
-        if (obj==null){
-            obj=userService.getUid(name);
-            log.info("查询数据库................");
-            redisUtil.set("name",obj);
+    void testRedis2() {
+        for (int i=0;i<bookService.getId2(166).size();i++){
+
+            System.out.println(bookService.getId2(166).get(i));
         }
-        log.info("查询缓存中.................");
-        return obj;
-    }
 
-    @Test
-    void testRedis2() throws JsonProcessingException {
-//        key:String   value:json
-        User user = new User();
-        user.setName("zhang");
-        user.setPassword("1");
-        user.setEmail("123@qq.com");
-        Object user2= objectMapper.writeValueAsString(user);
-        redisUtil.hset("person","family",user2);
-/*        if (redisUtil.get("user")){
-            log.info("success.......");
-            System.out.println(redisUtil.get("user"));
-        }*/
-        System.out.println(redisUtil.hget("person","family"));
-
+ /*           for (int i=0;i<bookService.getId2(166).size();i++){
+                if (bookController.getProduceFromRedis("zhang").contains(bookService.getId2(uid).get())){
+                    model.addAttribute("HasThisProduct","近期加购物车商品");
+                }
+            }*/
     }
 }

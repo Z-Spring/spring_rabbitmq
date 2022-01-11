@@ -37,7 +37,7 @@
             <!--注意超过365天的日志文件会被删除，即使已经按天分开也会删除-->
             <MaxHistory>365</MaxHistory>
         </rollingPolicy>
-        <!--日志文件里只保存ERROR及以上级别的日志-->
+        <!--日志文件里只保存ERROR及以上级别的日志,六大日志级别FATAL ERROR WARNING INFO DEBUG TRACE -->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>ERROR</level>
         </filter>

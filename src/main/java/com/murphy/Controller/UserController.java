@@ -25,6 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 @Controller
@@ -44,16 +46,20 @@ public class UserController {
     ObjectMapper objectMapper;
     @Autowired
     RedisTemplate redisTemplate;
+    @Autowired
+    BookController bookController;
 
-    //      首页
+    //     首页
     @GetMapping(value = "/base")
-    public ModelAndView base(Model model, HttpServletRequest request, HttpSession session) throws JsonProcessingException {
+    public ModelAndView base(Model model, HttpServletRequest request, HttpSession session) throws IOException {
         if (session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
             int uid = userService.getUid(user.getName());
             request.setAttribute("name", bookService.getBook());
             model.addAttribute("bookList", bookService.getBook());
             model.addAttribute("price", bookService.getPrice(uid));
+            model.addAttribute("pid",bookController.getProduceFromRedis(user.getName()));
+            model.addAttribute("HasThisProduct","近期加购物车商品");
         } else {
             request.setAttribute("name", bookService.getBook());
             model.addAttribute("bookList", bookService.getBook());
@@ -223,7 +229,7 @@ public class UserController {
      * @param name 用户名
      */
     public boolean putNameToRedis(String name){
-        if (redisUtil.sSet("username",name)==1){
+        if (redisUtil.sSet("RegisterUserName",name)==1){
             return true;
         }
         return false;

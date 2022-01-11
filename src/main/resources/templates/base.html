@@ -57,15 +57,27 @@
         </div>
         <div class="price">
             <td th:text="'￥'+${book.price}">价格</td>
+<!--            <p th:if="${HasThisProduct} ne null">-->
             <br>
         </div>
         <div class="book-font">
             <td th:text="${book.name}">书名</td>
         </div>
+
+<!--        <div th:if="${pid} eq ${book.pid}">-->
+<!--        <p th:value="${pid}"></p>
+        <p th:value="${book.pid}"></p>-->
+        <div th:if="${pid} ne null">
+            <div th:if="${#lists.contains(pid,book.pid)}">
+                <!--            <p th:if="${#lists.contains(${pid},${book.pid})}"></p>-->
+                <p th:text="${HasThisProduct}"></p>
+            </div>
+        </div>
         <a class="book-operate" style="text-decoration:none" th:href="@{/cart/{pid}/1(pid=${book.pid})}">
             <img class="cart-img" src="images/cart.png" alt="购物车"/>加入购物车</a>
     </div>
 </tr>
+
 <!--购物车商品总价-->
 <div class="cart-price">
     <a href="/cart"><img class="cart2-img" src="images/cart.png" alt="购物车"/></a>
