@@ -5,10 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * @author Murphy
+ */
 @SpringBootApplication
 public class SpringRabbitmqApplication {
     public static void main(String[] args) {
@@ -27,7 +31,8 @@ public class SpringRabbitmqApplication {
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
                 for (var interceptor : interceptors) {
-                    registry.addInterceptor(interceptor).excludePathPatterns("/register", "/login", "/base", "/**/*/*.js", "/**/*.css", "/**/*.html", "/**/*.png");
+                    registry.addInterceptor(interceptor).excludePathPatterns("/register", "/login","/search/*","/test/*",
+                            "/search_page","/base", "/**/*/*.js", "/**/*.css", "/**/*.html", "/**/*.png");
 
                 }
             }

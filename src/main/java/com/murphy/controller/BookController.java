@@ -1,4 +1,4 @@
-package com.murphy.Controller;
+package com.murphy.controller;
 
 import com.murphy.Utils.RedisUtil;
 import com.murphy.entity.Cart;
@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -93,7 +92,7 @@ public class BookController {
      * 商品详细信息
      * @return
      */
-    @GetMapping(value = "/bookinfo")
+    @GetMapping(value = "/bookinfo/test")
     public ModelAndView getBookInfo() {
         int a = 1, b = 0, sum;
         sum = a + b;

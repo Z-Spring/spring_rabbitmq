@@ -1,5 +1,5 @@
 version: '3.8'
-#三个服务  app  rabbitmq  redis
+#四个服务  app  rabbitmq  redis  mysql
 services:
   app:
     build: .

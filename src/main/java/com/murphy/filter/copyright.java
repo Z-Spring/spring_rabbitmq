@@ -10,15 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * @author Murphy
+ */
 @Component
 //@WebFilter("/*")
 public class copyright extends FilterRegistrationBean<Filter> {
-/*    @PostConstruct
-    public void init(){
-        setFilter(new copyrightFilter());
-        setUrlPatterns(List.of("/*"));
-    }*/
-
     @Override
     public Filter getFilter() {
         return new CopyRightFilter();
@@ -31,6 +28,7 @@ class CopyRightFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         request.setAttribute("copyright", "Copyright © 2001-2021 Murphy.保留所有权利");
         //调用该方法后，表示过滤器经过原来的url请求处理方法
-        filterChain.doFilter(servletRequest, servletResponse);//这句话很重要！！！
+        //这句话很重要！！！
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 }

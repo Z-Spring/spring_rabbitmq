@@ -1,0 +1,26 @@
+/*加上这个就可以将链接的下划线去掉了*/
+a{
+    text-decoration: none !important;
+    color: crimson;
+}
+.product{
+    margin-top:90px;
+}
+.book-price {
+    font-weight: 400;
+    color: crimson;
+    font-family: fantasy;
+    font-size: larger;
+}
+.book_name{
+    color: crimson;
+    padding-top: 5px;
+    font-size: smaller;
+}
+.product {
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 80px;
+    /*将从数据库中输出的数据并排显示*/
+    display: inline-table;
+}

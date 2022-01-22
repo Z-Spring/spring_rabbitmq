@@ -1,19 +1,15 @@
-package com.murphy.Controller;
+package com.murphy.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.murphy.QueueMessageListener;
 import com.murphy.Utils.RedisUtil;
-import com.murphy.entity.Book;
 import com.murphy.entity.User;
 import com.murphy.message.LoginMessage;
 import com.murphy.service.BookService;
 import com.murphy.service.MessagingService;
 import com.murphy.service.UserService;
-import com.mysql.cj.Session;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -21,12 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.*;
 
 @Controller

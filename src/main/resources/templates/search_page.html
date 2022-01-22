@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索页面</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+<!--        <script src="js/vue.js"></script>-->
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="search_tag" id="search_foot">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="base">解忧书店</a>
+            </div>
+            <div id="app"  class="input-group col-md-3" style="margin-top:9px;position:absolute;margin-left: 620px">
+                <input id="test2" v-model="keyword" type="search" class="form-control" placeholder="搜你想搜~"  >
+                <span class="input-group-btn">
+                    <button id="search"  class="btn btn-info btn-search" @click="search2" >查找</button>
+                </span>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+                <div class="username" th:if="${session.user} ne null">
+                    <li><a class="user-login" th:text="${session.user.getName()}"></a></li>
+                    <li><a class="user-logout" href="logout"><span class="glyphicon glyphicon-log-out">注销</span></a></li>
+                </div>
+                <td th:if="${session.user} eq null">
+                    <li><a href="register"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+                    <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                </td>
+            </ul>
+        </div>
+    </nav>
+    <!--渲染画面-->
+    <div class="product"   v-for="result in results">
+        <div class="book_img">
+            <img :src="result.imgpath" width="180" height="230">
+        </div>
+        <p class="book_name">
+            <a v-html="result.name"></a>
+        </p>
+        <div class="book-price">
+            <span>￥<span v-html="result.price"></span></span>
+        </div>
+        <p class="book-price">
+            <a v-html="result.id"></a>
+        </p>
+            <a class="book-operate" style="text-decoration:none" >
+            <img class="cart-img" src="images/cart.png" alt="购物车"/>加入购物车</a>
+    </div>
+</div>
+<script src="js/search.js"></script>
+
+<span id="book_info"></span>
+<p class="copyright" th:text="${#request.getAttribute('copyright')}"></p>
+</body>
+</html>

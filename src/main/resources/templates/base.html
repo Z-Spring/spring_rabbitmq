@@ -6,36 +6,36 @@
     <title>首页</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/base.css">
 <!--    js  css等静态文件不要从static目录开始，否则springboot查询不到文件-->
 <!--    <script src="js/jquery.js"></script>-->
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <!--    <link rel="import" href="header.html">-->
-    <!--    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script>
-        $(function () {
-            $('img').click(function () {
-                $.get('/bookinfo'
-                ).done(function (name) {
-                    console.log($(name).find('div'));
-                    $('#base').text('zhang');
-                }).fail(function () {
-                    console.log('fail');
-                });
-                // alert('aaa');
-            });
-        })
-
-    </script>
+    <script src="js/search.js"></script>
 </head>
 <body>
 <!--首页导航栏-->
-<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+<nav id="base_navigate" class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="base">解忧书店</a>
         </div>
+<!--        搜索框-->
+<!--        <form   method="get" action="search_page">-->
+            <div class="input-group col-md-3" style="margin-top:9px;position:absolute;margin-left: 620px">
+                <input id="test2" type="search" v-model="keyword2" class="form-control" placeholder="搜你想搜~"  >
+                <span class="input-group-btn">
+<!--                        <button id="search"  class="btn btn-info btn-search" @click="search2" >查找</button>-->
+                    <a href="/search_page">
+                        <button id="search" class="btn btn-info btn-search" @click="search" >查找</button>
+<!--                   <button id="search" class="btn btn-info btn-search" type="submit" onclick="search()">查找</button>-->
+                    </a>
+                </span>
+            </div>
+<!--        </form>-->
         <ul class="nav navbar-nav navbar-right">
             <div class="username" th:if="${session.user} ne null">
                 <li><a class="user-login" th:text="${session.user.getName()}"></a></li>
@@ -76,8 +76,10 @@
 <!--购物车商品总价-->
 <div class="cart-price">
     <a href="/cart"><img class="cart2-img" src="images/cart.png" alt="购物车"/></a>
-    <p class="summprice" th:text="'￥'+${price}"></p>
+    <p class="summprice"  th:text="'￥'+${price}"></p>
 </div>
+<p id="book_info"></p>
+
 <!--横线以及版权信息-->
 <!--<div class="line" style="border: 1px solid #CCC" ></div>-->
 <p class="copyright" th:text="${#request.getAttribute('copyright')}"></p>
