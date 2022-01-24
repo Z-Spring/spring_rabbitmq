@@ -14,7 +14,6 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="js/search.js"></script>
 </head>
 <body>
 <!--首页导航栏-->
@@ -25,16 +24,15 @@
         </div>
 <!--        搜索框-->
 <!--        <form   method="get" action="search_page">-->
-            <div class="input-group col-md-3" style="margin-top:9px;position:absolute;margin-left: 620px">
-                <input id="test2" type="search" v-model="keyword2" class="form-control" placeholder="搜你想搜~"  >
-                <span class="input-group-btn">
-<!--                        <button id="search"  class="btn btn-info btn-search" @click="search2" >查找</button>-->
-                    <a href="/search_page">
-                        <button id="search" class="btn btn-info btn-search" @click="search" >查找</button>
-<!--                   <button id="search" class="btn btn-info btn-search" type="submit" onclick="search()">查找</button>-->
+            <div class="search_position" style="margin-top:15px; position:absolute; left: 1400px;">
+<!--                <input id="test2" type="search" v-model="keyword2" class="form-control" placeholder="搜你想搜~"  >-->
+<!--                <div class="search">-->
+                    <a   href="/search_page">搜索
+<!--                        <button id="search" class="btn btn-info btn-search" onclick="jump()" >搜索</button>-->
                     </a>
-                </span>
+<!--                </div>-->
             </div>
+
 <!--        </form>-->
         <ul class="nav navbar-nav navbar-right">
             <div class="username" th:if="${session.user} ne null">
@@ -48,6 +46,7 @@
         </ul>
     </div>
 </nav>
+<!--<script src="js/search.js"></script>-->
 <!--ne !=-->
 <!--遍历输出所有图书-->
 <tr th:each="book:${bookList}">

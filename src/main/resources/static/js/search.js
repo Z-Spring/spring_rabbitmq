@@ -12,38 +12,50 @@
         console.log('失败: ' + xhr.status + ', 原因: ' + status);
     })
 }*/
-new Vue({
+// search_page
+let search_page=new Vue({
     el:'#search_foot',
     data:{
         keyword:'',
         results: []
     },
     methods:{
-        search2: function (){
+        search5: function (){
             let keyword=this.keyword;
             console.log(keyword);
             axios.get('/search/'+keyword).then((response)=>{
                 console.log(response.data);
                 this.results=response.data;
                 console.log(this.results);
-            })
+            });
         }
     }
-})
-new Vue({
-    el:'#base_navigate',
+});
+//http://localhost:8086/search_page?q=springboot
+window.search_page=search_page;
+/*
+    (function f() {
+    let url=window.location.href;
+    console.log(url);
+    let local=url.split('?')[1];
+    console.log(local);
+    let result=local.split('=')[1];
+    console.log(result);
+    let s=new Vue({
+    el:'#search_foot',
     data:{
-        keyword2:'',
-        results: []
-    },
-    methods:{
-        search:function (){
-             let keyword2=this.keyword2;
-            axios.post('/search_page',{
-                keyword2: keyword2
-            }).then(resp=>{
-                console.log(resp.data);
-            })
-        }
-    }
-})
+    keyword:''
+}
+});
+    window.s=s;
+    window.s.keyword=result;
+    window.search_page=result;
+    axios.get('/search/'+result).then((response)=>{
+    console.log(response.data);
+});
+})();*/
+/*    function jump() {
+    let searchValue=$('#test2').val();
+    window.location.href='/search_page?keyword='+searchValue;
+}*/
+

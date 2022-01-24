@@ -11,18 +11,19 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
 <body>
-<div class="search_tag" id="search_foot">
+<div id="search_foot" class="search_tag" >
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="base">解忧书店</a>
             </div>
             <div id="app"  class="input-group col-md-3" style="margin-top:9px;position:absolute;margin-left: 620px">
-                <input id="test2" v-model="keyword" type="search" class="form-control" placeholder="搜你想搜~"  >
+                <input id="search_test" v-model="keyword" type="search" class="form-control" placeholder="搜你想搜~"  >
                 <span class="input-group-btn">
-                    <button id="search"  class="btn btn-info btn-search" @click="search2" >查找</button>
+                    <button id="search"  class="btn btn-info btn-search" v-on:click="search5" >查找</button>
                 </span>
             </div>
 
