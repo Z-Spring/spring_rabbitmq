@@ -1,0 +1,36 @@
+body{
+    margin: 0px;
+}
+.bg_img{
+    /*background-image:  url('/test1/templates/picture1.jpg');*/
+    background-image:  url('https://static.yximgs.com/udata/pkg/acfun/loginbg.be7a2d2876ab48ed.png');
+    background-repeat: repeat;
+    background-size: cover;
+    background-position: top left;
+    height: 700px;
+    /*padding-top: 10px;*/
+}
+form{
+    border:   rgb(243, 244, 250);
+    width: 300px;
+    border-radius: 10px;
+    padding: 80px;
+    background-color: rgba(243, 244, 250,.9);
+    top: 200px;
+    left: 60em;
+    position: absolute;
+}
+input{
+    margin-bottom: 5px;
+    height: 2em;
+    width: 20em;
+    border-radius: 2px;
+}
+button{
+    margin-left: 5em ;
+}
+h2{
+    font-family: Gabriola, serif;
+    font-weight: bold;
+}
+

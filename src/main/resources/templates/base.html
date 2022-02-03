@@ -24,30 +24,28 @@
         </div>
 <!--        搜索框-->
 <!--        <form   method="get" action="search_page">-->
-            <div class="search_position" style="margin-top:15px; position:absolute; left: 1400px;">
-<!--                <input id="test2" type="search" v-model="keyword2" class="form-control" placeholder="搜你想搜~"  >-->
-<!--                <div class="search">-->
-                    <a   href="/search_page">搜索
-<!--                        <button id="search" class="btn btn-info btn-search" onclick="jump()" >搜索</button>-->
-                    </a>
-<!--                </div>-->
+            <div class="search_position" style="margin-top:18px; position:absolute; left: 1400px;">
+                <a href="/search_page">搜索</a>
             </div>
-
 <!--        </form>-->
         <ul class="nav navbar-nav navbar-right">
-            <div class="username" th:if="${session.user} ne null">
-                <li><a class="user-login" th:text="${session.user.getName()}"></a></li>
-                <li><a class="user-logout" href="logout"><span class="glyphicon glyphicon-log-out">注销</span></a></li>
+            <div class="login_register">
+                <div class="username" th:if="${session.user} ne null">
+                    <li><span class="user-login" th:text="${session.user.getName()}"></span></li>
+                    <li><span class="user-logout" href="logout"><span class="glyphicon glyphicon-log-out">注销</span></span></li>
+                </div>
+                <div th:if="${session.user} eq null">
+                    <li><a href="register"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+                    <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                </div>
             </div>
-            <td th:if="${session.user} eq null">
-                <li><a href="register"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
-                <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
-            </td>
+
         </ul>
     </div>
 </nav>
 <!--<script src="js/search.js"></script>-->
 <!--ne !=-->
+
 <!--遍历输出所有图书-->
 <tr th:each="book:${bookList}">
     <div class="block">

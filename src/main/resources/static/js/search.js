@@ -1,3 +1,4 @@
+// this .js page is not be used
 'use strict';
 
 /*function search() {

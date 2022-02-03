@@ -4,29 +4,51 @@
     <meta charset="UTF-8">
     <title>注册页面</title>
     <link rel="stylesheet" href="css/index.css">
-<!--    <script src="../static/js/jquery.js"></script>-->
+    <link rel="stylesheet" href="css/register.css">
+    <!--    <script src="../static/js/jquery.js"></script>-->
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/blueimp-md5/2.18.0/js/md5.js"></script>
+
 </head>
 <body>
-<form id="submit" action="register" method="post" onsubmit="return checkForm()" >
-    <p id="message"></p>
-    <input type="text" name="email" placeholder="请输入邮箱"><br>
-    <input type="text" name="name" placeholder="请输入用户名"><br>
-    <input id="pwd1" type="password" value=""  placeholder="请输入密码"><br>
-    <input id="pwd2" type="password" name="password2" value="" placeholder="请再次输入密码"><br>
-    <input id="md5_pwd" type="hidden" name="password" value=""><br>
-    <button type="submit">注册</button><button type="reset">重置</button>
-    <!--    <input id="submit" type="submit" value="注册"><br>-->
-</form>
-<p th:if="${message} ne null">
+<!--页眉-->
+<header>
+</header>
+<!--导航栏-->
+<div class="nav">
+    <h2>网上书城</h2>
+</div>
+<!--主内容-->
+<div id="main">
+    <div class="bg_img"></div>
+    <div class="form">
+        <form id="submit" action="register" method="post" onsubmit="return checkForm()" >
+            <h2 class="label_form">注册账号</h2>
+            <p id="message"></p>
+            <input type="text" name="email" placeholder="请输入邮箱"><br>
+            <input type="text" name="name" placeholder="请输入用户名"><br>
+            <input id="pwd1" type="password" value=""  placeholder="请输入密码"><br>
+            <input id="pwd2" type="password" name="password2" value="" placeholder="请再次输入密码"><br>
+            <input id="md5_pwd" type="hidden" name="password" value="">
+            <button type="submit">注册</button><button type="reset">重置</button>
+        </form>
+    </div>
+    <p th:if="${message} ne null">
     <p th:text="${message}" style="color: red">
-</p>
-<script src="js/checkForm.js"></script>
+    </p>
+    <script src="js/checkForm.js"></script>
+</div>
+<!--侧边栏-->
+<aside></aside>
+<!--页脚-->
+<footer>
+    <p class="copyright2"  th:text="${#request.getAttribute('copyright')}"></p>
+
+</footer>
+
 
 <!--copyright and line-->
 <!--<div class="line" style="border: 1px solid #CCC" ></div>-->
-<p class="copyright2"  th:text="${#request.getAttribute('copyright')}"></p>
 
 </body>
 </html>

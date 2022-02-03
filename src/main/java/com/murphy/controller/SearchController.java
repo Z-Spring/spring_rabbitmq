@@ -39,3 +39,7 @@ public class SearchController {
     }
 
 }
+
+class Test{
+
+}
