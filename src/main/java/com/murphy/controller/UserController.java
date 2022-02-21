@@ -3,12 +3,13 @@ package com.murphy.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.murphy.QueueMessageListener;
-import com.murphy.Utils.RedisUtil;
+import com.murphy.utils.RedisUtil;
 import com.murphy.entity.User;
 import com.murphy.message.LoginMessage;
 import com.murphy.service.BookService;
 import com.murphy.service.MessagingService;
 import com.murphy.service.UserService;
+import com.murphy.utils.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -42,7 +43,14 @@ public class UserController {
     @Autowired
     BookController bookController;
 
-    //     首页
+    /**
+     * 首页
+     * @param model
+     * @param request
+     * @param session
+     * @return
+     * @throws IOException
+     */
     @GetMapping(value = "/base")
     public ModelAndView base(Model model, HttpServletRequest request, HttpSession session) throws IOException {
         if (session.getAttribute("user") != null) {
@@ -61,9 +69,9 @@ public class UserController {
         return new ModelAndView("base");
     }
 
-    //    商品详细信息
 
     /**
+     * 商品详细信息
      * book [GET]
      * @return
      * @throws JsonProcessingException
@@ -86,9 +94,8 @@ public class UserController {
         return new ModelAndView("error");
     }
 
-    //      登录
-
     /**
+     * 登录
      * login [GET]
      * @return
      */
@@ -98,7 +105,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login2(@RequestParam("name") String name, HttpSession session, Model model, @RequestParam("password") String password, @RequestParam("email") String email) throws Exception {
+    public String login2(@RequestParam("name") String name, HttpSession session, Model model, @RequestParam("password") String password, @RequestParam("email") String email,HttpServletRequest request) throws Exception {
         if (judgeRegex(email)) {
             User user = new User();
             user.setName(name);
@@ -109,14 +116,14 @@ public class UserController {
             if (getUserFromRedis(name) == null) {
                 log.info("从数据库中获取数据");
                 long begin = System.currentTimeMillis();
-                log.info("开始时间: {}", begin);
                 if (userService.login(user)) {
                     long end = System.currentTimeMillis();
-                    log.info("database结束时间: {}", end);
                     //注意：这里是HttpSession
                     session.setAttribute("user", user);
                     putUserIntoRedis(user, name);
                     log.info("login success, username:{}, password:{}", name, pwd);
+                    String token = userService.getToken(name);
+                    log.info("token: {}", token);
 //                  session.setMaxInactiveInterval(30*60);   设置session的过期时间  单位：秒
                     messagingService.sendLoginMessage(LoginMessage.of(user.getEmail(), user.getName(), true));
 //                  queueMessageListener.onLoginMessageFromMailQueue(LoginMessage.of(user.getEmail(), user.getName(), true));
@@ -126,8 +133,6 @@ public class UserController {
                     String s = String.valueOf(model.getAttribute("loginerror"));
                     log.info("login failure, username: {},password: {}", name, pwd);
                     messagingService.sendLoginMessage(LoginMessage.of(email, "unknown", false));
-//                  return new ModelAndView("login");
-//                  return "login";
                     return "login";
                 }
             } else {
@@ -136,6 +141,10 @@ public class UserController {
                 //注意：这里是HttpSession
                 session.setAttribute("user", user);
                 log.info("从缓存中查询数据");
+                Map<String, String> token_map = new HashMap<>();
+                token_map.put("user", name);
+                String token = TokenUtils.getToken(token_map);
+                log.info("token: {}", token);
                 log.info("login success, username: {}, password: {}", name, pwd);
                 messagingService.sendLoginMessage(LoginMessage.of(user.getEmail(), user.getName(), true));
                 return "redirect:/base";
@@ -143,9 +152,17 @@ public class UserController {
             }
 
         } else {
-            model.addAttribute("errorregex", "请输入正确的email格式");
+            model.addAttribute("errorEmail", "请输入正确的email格式");
             return "login";
         }
+    }
+
+    @ResponseBody
+    @PostMapping(value = "/passToken")
+    public String passToken(@RequestBody String name) {
+        String token = userService.getToken(name);
+        log.info("token点对点: {}", token);
+        return token;
     }
 
     /**

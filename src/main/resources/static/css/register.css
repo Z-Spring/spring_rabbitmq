@@ -26,6 +26,12 @@ input{
     width: 20em;
     border-radius: 2px;
 }
+input:valid{
+    background-color: aquamarine;
+}
+input:invalid{
+    background-color: crimson;
+}
 button{
     margin-left: 5em ;
 }

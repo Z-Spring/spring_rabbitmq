@@ -1,11 +1,14 @@
 package com.murphy.service;
 
-import com.murphy.Utils.RedisUtil;
+import com.murphy.utils.RedisUtil;
 import com.murphy.entity.User;
 import com.murphy.mapper.UserMapper;
+import com.murphy.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -31,6 +34,12 @@ public class UserService {
     public int getUid(String name) {
 
         return userMapper.getUid(name);
+    }
+    public String getToken(String name){
+        Map<String, String> token_map=new HashMap<>();
+        token_map.put("user", name);
+        String token = TokenUtils.getToken(token_map);
+        return token;
     }
 
 }

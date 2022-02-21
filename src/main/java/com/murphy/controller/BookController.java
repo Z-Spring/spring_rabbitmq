@@ -1,10 +1,14 @@
 package com.murphy.controller;
 
-import com.murphy.Utils.RedisUtil;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.murphy.utils.RedisUtil;
 import com.murphy.entity.Cart;
 import com.murphy.entity.User;
 import com.murphy.service.BookService;
 import com.murphy.service.UserService;
+import com.murphy.utils.TokenUtils;
+import io.lettuce.core.output.ListOfGenericMapsOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -76,7 +80,10 @@ public class BookController {
     }
 
     @GetMapping(value = "/cart")
-    public ModelAndView getCart(Model model, HttpSession session) {
+    public ModelAndView getCart(Model model, HttpSession session, HttpServletRequest request) throws IOException {
+/*        String token = request.getHeader("token");
+        DecodedJWT decodedJWT = TokenUtils.decodeToken(token);
+        String user = decodedJWT.getClaim("user").asString();*/
         User user = (User) session.getAttribute("user");
         int uid = userService.getUid(user.getName());
         //这里要注意list为空和null的区别！！
@@ -98,8 +105,13 @@ public class BookController {
         sum = a + b;
         return new ModelAndView("bookinfo");
     }
-
-    @PostMapping(value = "/bookinfo")
+    @ResponseBody
+    @GetMapping(value = "/bookInfo")
+    public String getBookInfo2(){
+        log.info("进入bookInfo");
+        return "123";
+    }
+    @PostMapping(value = "/bookInfo")
     public void getBookInfo2(@RequestParam String name, String zhang) {
         System.out.println(name);
         System.out.println(zhang);

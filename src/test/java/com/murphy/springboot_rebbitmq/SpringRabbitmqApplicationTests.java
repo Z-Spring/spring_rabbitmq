@@ -1,9 +1,13 @@
 package com.murphy.springboot_rebbitmq;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.murphy.controller.BookController;
 import com.murphy.controller.UserController;
-import com.murphy.Utils.RedisUtil;
+import com.murphy.utils.RedisUtil;
 import com.murphy.mapper.BookMapper;
 import com.murphy.service.BookService;
 import com.murphy.service.UserService;
@@ -22,26 +26,24 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@SpringBootTest
+//@SpringBootTest
 @Slf4j
 public class SpringRabbitmqApplicationTests {
 
 
-/*    @Test
-    void preHandleTest() throws Exception {}{
-        long date=System.currentTimeMillis();//获取时间戳
-        String uid2="u-"+date;
-        System.out.println(uid2);
-        log.info("timestamp:{}",uid2);
-    }*/
+    /*    @Test
+        void preHandleTest() throws Exception {}{
+            long date=System.currentTimeMillis();//获取时间戳
+            String uid2="u-"+date;
+            System.out.println(uid2);
+            log.info("timestamp:{}",uid2);
+        }*/
     @Autowired
     RedisUtil redisUtil;
     @Autowired
@@ -112,6 +114,31 @@ public class SpringRabbitmqApplicationTests {
             list.add(documentFields.getSourceAsMap());
         }
         System.out.println(list);
+    }
+
+    /**
+     * 测试JWT
+     */
+    @Test
+    void testJwt(){
+//        设置过期时间
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, 30);
+        String token=JWT.create()
+                .withClaim("name", "zhangsan")
+                .withClaim("age", "18")
+                .withExpiresAt(calendar.getTime())
+                .sign(Algorithm.HMAC256("secret"));
+        System.out.println(token);
+    }
+    @Test
+    void testVerifyJwt(){
+        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256("0-=12hu7^%$0sdaf")).build();
+        String token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDUxODk1NjEsInVzZXIiOiJ6aGFuZyJ9.LWLnUaob1lQmT1HpNJBhMtUmVi0cMigZYXvlgbJU4tY";
+        DecodedJWT verify = jwtVerifier.verify("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDUxODk1NjEsInVzZXIiOiJ6aGFuZyJ9.LWLnUaob1lQmT1HpNJBhMtUmVi0cMigZYXvlgbJU4tY");
+//        System.out.println(verify.getClaim("user").asString());
+        DecodedJWT decode = JWT.decode(token);
+        System.out.println(decode.getClaim("user").asString());
     }
 
 }
