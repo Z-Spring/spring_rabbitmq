@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 书籍页面转发
@@ -71,7 +72,7 @@ public class BookController {
                 }
             } else if (bookService.addCart(pid, count, price, uid)) {
                 //如果购物车中没有此件商品，则直接添加到购物车中
-                putProduceIntoRedis(user.getName(), pid);
+                putProductIntoRedis(user.getName(), pid);
                 model.addAttribute("cartList", bookService.getCart(uid));
                 return "redirect:/base";
             }
@@ -119,15 +120,19 @@ public class BookController {
     }
 
     /**
+     * 用来显示用户最近是否将商品添加过购物车
+     * <p></p>
      * 这里利用Redis的list类型，name为key ,pid为value
+     * 将商品pid添加到Redis中
      * @param name   key
      * @param pid   value
      */
-    public void putProduceIntoRedis(String name,int pid){
+    public void putProductIntoRedis(String name,int pid){
         redisTemplate.opsForList().rightPush(name,pid);
+        redisTemplate.expire(name,7, TimeUnit.DAYS);
         log.info("添加pid成功");
     }
-    public List getProduceFromRedis(String name){
+    public List getProductFromRedis(String name){
         return redisTemplate.opsForList().range(name,0,-1);
     }
 }

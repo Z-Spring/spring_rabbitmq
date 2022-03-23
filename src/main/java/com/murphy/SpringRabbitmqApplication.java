@@ -48,9 +48,9 @@ public class SpringRabbitmqApplication {
 //                registry.addInterceptor(new LoginInterceptor())
 //                        .excludePathPatterns("/register", "/login","/search/*","/test/*",
 //                            "/search_page","/base", "/**/*/*.js", "/**/*.css", "/**/*.html", "/**/*.png");
-                registry.addInterceptor(new JwtInterceptor())
-                        .excludePathPatterns("/register", "/login","/search/*","/test/*","/passToken",
-                        "/search_page","/base", "/**/*/*.js", "/**/*.css", "/**/*.html", "/**/*.png");
+//                registry.addInterceptor(new JwtInterceptor())
+//                        .excludePathPatterns("/register", "/login","/search/*","/test/*","/passToken",
+//                        "/search_page","/base", "/**/*/*.js", "/**/*.css", "/**/*.html", "/**/*.png");
             }
             @Override
             public void addCorsMappings(CorsRegistry registry) {

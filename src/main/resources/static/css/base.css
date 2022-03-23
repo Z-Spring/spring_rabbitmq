@@ -1,10 +1,19 @@
 /*加上这个就可以将链接的下划线去掉了*/
 a{
-    text-decoration: none !important;
+    /*text-decoration: none !important;*/
     color: crimson;
-    left: 713px;
-    top: 6px;
+    left: 713px !important;
+    top: 6px !important;
     /*color: #777777;*/
+}
+.nav {
+    /*position: fixed;*/
+}
+.login{
+    display: flex;
+    flex: 2px;
+    float: right;
+    line-height: 4em;
 }
 .product{
     margin-top:90px;

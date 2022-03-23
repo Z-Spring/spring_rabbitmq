@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+/**
+ * Book entity.
+ * @author Murphy
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

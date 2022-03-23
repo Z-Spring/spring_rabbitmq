@@ -7,45 +7,48 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/base.css">
-<!--    js  css等静态文件不要从static目录开始，否则springboot查询不到文件-->
-<!--    <script src="js/jquery.js"></script>-->
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!--    js  css等静态文件不要从static目录开始，否则springboot查询不到文件-->
+    <!--    <script src="js/jquery.js"></script>-->
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </head>
 <body>
-<!--首页导航栏-->
-<nav id="base_navigate" class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="base">解忧书店</a>
-        </div>
-<!--        搜索框-->
-<!--        <form   method="get" action="search_page">-->
-            <div class="search_position" style="margin-top:18px; position:absolute; left: 1400px;">
-                <a href="/search_page">搜索</a>
-            </div>
-<!--        </form>-->
-        <ul class="nav navbar-nav navbar-right">
-            <div class="login_register">
-                <div class="username" th:if="${session.user} ne null">
-                    <li><span class="user-login" th:text="${session.user.getName()}"></span></li>
-                    <li><span class="user-logout" href="logout"><span class="glyphicon glyphicon-log-out">注销</span></span></li>
-                </div>
-                <div th:if="${session.user} eq null">
-                    <li><a href="register"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
-                    <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
-                </div>
-            </div>
 
-        </ul>
-    </div>
-</nav>
 <!--<script src="js/search.js"></script>-->
 <!--ne !=-->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
 
+                <a class="navbar-brand" href="base">解忧书店</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+<!--                    <li><a href="/search_page">Search</a></li>-->
+                    <div class="logout" th:if="${session.user} ne null">
+                        <li><span class="user-login" th:text="${session.user.getName()}"></span></li>
+                        <li><a class="user-logout" href="logout"><span class="glyphicon glyphicon-log-out">注销</span></a></li>
+                    </div>
+                    <div class="login" th:if="${session.user} eq null">
+                        <li><a href="register"><span class="glyphicon glyphicon-user"></span> 注册</a></li>|
+                        <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> 登录</a>
+                    </div>
+
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
 <!--遍历输出所有图书-->
 <tr th:each="book:${bookList}">
     <div class="block">
@@ -54,7 +57,7 @@
         </div>
         <div class="price">
             <td th:text="'￥'+${book.price}">价格</td>
-<!--            <p th:if="${HasThisProduct} ne null">-->
+            <!--            <p th:if="${HasThisProduct} ne null">-->
             <br>
         </div>
         <div class="book-font">

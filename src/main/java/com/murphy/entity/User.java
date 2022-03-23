@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Table;
 
+/**
+ * user entity
+ * @author Murphy
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

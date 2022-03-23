@@ -19,6 +19,7 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
@@ -59,7 +60,7 @@ public class UserController {
             request.setAttribute("name", bookService.getBook());
             model.addAttribute("bookList", bookService.getBook());
             model.addAttribute("price", bookService.getPrice(uid));
-            model.addAttribute("pid",bookController.getProduceFromRedis(user.getName()));
+            model.addAttribute("pid",bookController.getProductFromRedis(user.getName()));
             model.addAttribute("HasThisProduct","近期加过购物车商品");
         } else {
             request.setAttribute("name", bookService.getBook());
@@ -105,7 +106,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login2(@RequestParam("name") String name, HttpSession session, Model model, @RequestParam("password") String password, @RequestParam("email") String email,HttpServletRequest request) throws Exception {
+    public String login2(@RequestParam("name") String name, HttpSession session, HttpServletResponse response, Model model, @RequestParam("password") String password, @RequestParam("email") String email, HttpServletRequest request) throws Exception {
         if (judgeRegex(email)) {
             User user = new User();
             user.setName(name);
@@ -123,10 +124,12 @@ public class UserController {
                     putUserIntoRedis(user, name);
                     log.info("login success, username:{}, password:{}", name, pwd);
                     String token = userService.getToken(name);
+                    response.setHeader("token", token);
                     log.info("token: {}", token);
 //                  session.setMaxInactiveInterval(30*60);   设置session的过期时间  单位：秒
                     messagingService.sendLoginMessage(LoginMessage.of(user.getEmail(), user.getName(), true));
 //                  queueMessageListener.onLoginMessageFromMailQueue(LoginMessage.of(user.getEmail(), user.getName(), true));
+                    log.info("test  {}",userService.getUser(user));
                     return "redirect:/base";
                 } else {
                     model.addAttribute("loginerror", "用户名或密码错误");
@@ -146,6 +149,7 @@ public class UserController {
                 String token = TokenUtils.getToken(token_map);
                 log.info("token: {}", token);
                 log.info("login success, username: {}, password: {}", name, pwd);
+                log.info("test  {}",userService.getUser(user));
                 messagingService.sendLoginMessage(LoginMessage.of(user.getEmail(), user.getName(), true));
                 return "redirect:/base";
 
@@ -166,7 +170,7 @@ public class UserController {
     }
 
     /**
-     * 把user写进Redis
+     * 把user写进Redis缓存
      * @param user  用户登录数据
      * @param name  根据name来查询用户数据
      * @throws JsonProcessingException
@@ -174,6 +178,7 @@ public class UserController {
     public void putUserIntoRedis(Object user, String name) throws JsonProcessingException {
         user = objectMapper.writeValueAsString(user);
         redisUtil.hset("user", name, user);
+        redisUtil.expire("user", 30 * 60);
         log.info("将数据存储到Redis中");
     }
     //从Redis中取出User

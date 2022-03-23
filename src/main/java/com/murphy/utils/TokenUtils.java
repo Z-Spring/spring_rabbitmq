@@ -27,6 +27,7 @@ public class TokenUtils {
             builder.withClaim(k, v);
         });
         String token = builder.withExpiresAt(calendar.getTime())
+                .withSubject("user")
                 .sign(Algorithm.HMAC256(TOKEN_KEY));
 
         return token;

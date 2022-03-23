@@ -1,5 +1,7 @@
 package com.murphy.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.murphy.utils.RedisUtil;
 import com.murphy.entity.User;
 import com.murphy.mapper.UserMapper;
@@ -40,6 +42,10 @@ public class UserService {
         token_map.put("user", name);
         String token = TokenUtils.getToken(token_map);
         return token;
+    }
+    public String getUser(User user) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(user);
     }
 
 }

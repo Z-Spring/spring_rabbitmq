@@ -27,12 +27,16 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * @author Murphy
+ */
 @Service
 public class BookService {
     @Autowired
     private BookMapper bookMapper;
     @Autowired
     RestHighLevelClient restHighLevelClient;
+
 
     public List<Book> getBook() {
         List list = bookMapper.display();
@@ -112,7 +116,7 @@ public class BookService {
         //bool查询
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .should(matchQueryBuilder);
-
+        //高亮显示
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightBuilder.field("name")
                 .field("tags")

@@ -76,7 +76,6 @@
     position: relative;
     margin-top: 25px;
 }
-
 .user-login {
     text-align: center;
     position: relative;
@@ -87,7 +86,7 @@
 }
 
 .user-logout {
-    position: relative;
+    /*position: relative;*/
     color: #7d7977;
     bottom: 5px;
     right: 24px;
@@ -127,8 +126,6 @@
 }
 
 label.error {
-
-
     color: #EA5200;
 }
 

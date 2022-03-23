@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.murphy.controller.BookController;
 import com.murphy.controller.UserController;
 import com.murphy.utils.RedisUtil;
@@ -12,6 +13,9 @@ import com.murphy.mapper.BookMapper;
 import com.murphy.service.BookService;
 import com.murphy.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.util.NamedThreadFactory;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -27,13 +31,18 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.SpringVersion;
 import org.springframework.data.redis.core.RedisTemplate;
-
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-//@SpringBootTest
+@SpringBootTest
 @Slf4j
+@Aspect
 public class SpringRabbitmqApplicationTests {
 
 
@@ -140,5 +149,91 @@ public class SpringRabbitmqApplicationTests {
         DecodedJWT decode = JWT.decode(token);
         System.out.println(decode.getClaim("user").asString());
     }
+    public static final int CORE_POOL_SIZE = 5;
+    public static final int MAX_POOL_SIZE=10;
+    public static final int QUEUE_CAPACITY=100;
+    public static final Long KEEP_ALIVE_TIME=1L;
+    public final static Lock lock= new ReentrantLock();
+
+    @Test
+    public void   test2() throws InterruptedException {
+//        给线程命名
+        String threadNamePrefix="test-";
+        if (lock.tryLock(1,TimeUnit.SECONDS)){
+            try {
+
+            }
+            finally {
+                lock.unlock();
+            }
+        }
+        ThreadFactory threadFactoryBuilder = new ThreadFactoryBuilder()
+                .setNameFormat(threadNamePrefix+"my-pool-%d")
+                .setDaemon(true).build();
+//        创建线程池
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(
+                CORE_POOL_SIZE,
+                MAX_POOL_SIZE,
+                KEEP_ALIVE_TIME,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(QUEUE_CAPACITY),
+                new NamedThreadFactory("murphy"));
+        for (int i = 0; i < 10; i++) {
+            Runnable runnable = new MyRunnable(""+i);
+            executor.execute(runnable);
+        }
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+        }
+        System.out.println("Finished all threads");
+
+    }
+    @Before("execution(* com.murphy.springboot_rebbitmq.SpringRabbitmqApplicationTests.testJwt(..))")
+    @Test
+    void getVersion(){
+
+        System.out.println(SpringVersion.getVersion());
+
+    }
+
+
+}
+class MyRunnable implements Runnable{
+    String command;
+    public MyRunnable(String s){
+        this.command=s;
+    }
+
+    /**
+     * When an object implementing interface {@code Runnable} is used
+     * to create a thread, starting the thread causes the object's
+     * {@code run} method to be called in that separately executing
+     * thread.
+     * <p>
+     * The general contract of the method {@code run} is that it may
+     * take any action whatsoever.
+     *
+     * @see Thread#run()
+     */
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName()+"开始执行"+command);
+        processCommand();
+        System.out.println(Thread.currentThread().getName()+"执行完毕了"+command);
+    }
+    private void processCommand() {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return this.command;
+    }
+
+
 
 }
