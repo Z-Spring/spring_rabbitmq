@@ -3,6 +3,8 @@ package com.murphy.service;
 import com.murphy.entity.Book;
 import com.murphy.entity.Cart;
 import com.murphy.mapper.BookMapper;
+import com.murphy.utils.RedisUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -15,12 +17,11 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.elasticsearch.common.text.Text;
-
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,12 +32,16 @@ import java.util.Map;
  * @author Murphy
  */
 @Service
+@Slf4j
 public class BookService {
     @Autowired
     private BookMapper bookMapper;
     @Autowired
     RestHighLevelClient restHighLevelClient;
-
+    @Autowired
+    RedisUtil redisUtil;
+    @Autowired
+    RedisTemplate redisTemplate;
 
     public List<Book> getBook() {
         List list = bookMapper.display();
@@ -79,6 +84,13 @@ public class BookService {
     public int getCount(int pid, int uid) {
         if (bookMapper.getId2(uid).contains(pid)) {
             return bookMapper.getCount(pid, uid);
+        }
+        return 0;
+    }
+    public int getCountByName(String name, int uid) {
+        if (bookMapper.getId2(uid).contains(name)) {
+            return bookMapper.getCountByName(name, uid);
+
         }
         return 0;
     }
@@ -127,25 +139,53 @@ public class BookService {
                 .query(matchQueryBuilder)
                 .query(boolQueryBuilder)
                 .highlighter(highlightBuilder);
-
         searchRequest.source(searchSourceBuilder);
         SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-        for (SearchHit documentFields:searchResponse.getHits().getHits()){
-            Map<String, HighlightField> highlightFields = documentFields.getHighlightFields();
-            HighlightField name = highlightFields.get("name");
-            Map<String, Object> sourceAsMap = documentFields.getSourceAsMap();
-            //解析高亮的字段，将原来的字段替换成新的高亮字段
-            if (name!=null){
-                Text[] texts = name.fragments();
-                String new_name="";
-                for (Text text : texts) {
-                    new_name+=text;
+        if (searchResponse.getHits().getTotalHits().value==0){
+            log.info("can not find this product🎈");
+            List error=List.of("searcherror");
+            return error ;
+        }else{
+            for (SearchHit documentFields:searchResponse.getHits().getHits()){
+
+                Map<String, HighlightField> highlightFields = documentFields.getHighlightFields();
+                HighlightField name = highlightFields.get("name");
+                Map<String, Object> sourceAsMap = documentFields.getSourceAsMap();
+                //解析高亮的字段，将原来的字段替换成新的高亮字段
+                if (name!=null){
+                    Text[] texts = name.fragments();
+                    String new_name="";
+                    for (Text text : texts) {
+                        new_name+=text;
+                    }
+                    sourceAsMap.put("name",new_name);
                 }
-                sourceAsMap.put("name",new_name);
+                list.add(documentFields.getSourceAsMap());
             }
-            list.add(documentFields.getSourceAsMap());
         }
         return list;
     }
+
+    /**
+     * 近期加入购物车排行榜
+     */
+    public String getName(int pid){
+        return bookMapper.getName(pid);
+    }
+    @Scheduled(initialDelay = 60_000, fixedRate = 60_000)
+    public void getCountByPid(){
+        int score=0;
+        for (int pid: bookMapper.getPidFromBookInfo()){
+            for (int uid: bookMapper.getUid()){
+                score+= getCount(pid,uid);
+            }
+            log.info("{} : {}",pid,score);
+            String productName= getName(pid);
+            redisTemplate.opsForZSet().add("rankingList",productName,score);
+            score=0;
+
+        }
+    }
+
 
 }

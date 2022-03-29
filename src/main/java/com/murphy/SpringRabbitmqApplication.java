@@ -8,6 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -20,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author Murphy
  */
 @SpringBootApplication
+@EnableScheduling
+@EnableAspectJAutoProxy
 public class SpringRabbitmqApplication {
     public static void main(String[] args) {
         SpringApplication.run(SpringRabbitmqApplication.class, args);
@@ -46,7 +50,7 @@ public class SpringRabbitmqApplication {
 //
 //                }
 //                registry.addInterceptor(new LoginInterceptor())
-//                        .excludePathPatterns("/register", "/login","/search/*","/test/*",
+//                        .excludePathPatterns("/register", "/login","/search/*","/test/*","/rankingList",
 //                            "/search_page","/base", "/**/*/*.js", "/**/*.css", "/**/*.html", "/**/*.png");
 //                registry.addInterceptor(new JwtInterceptor())
 //                        .excludePathPatterns("/register", "/login","/search/*","/test/*","/passToken",

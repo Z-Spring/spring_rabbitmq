@@ -188,3 +188,8 @@ label.error {
     position: relative;
     top: 298px;
 }
+.search-error{
+    text-align: center;
+    color: #EA5200;
+    left: 4em;
+}

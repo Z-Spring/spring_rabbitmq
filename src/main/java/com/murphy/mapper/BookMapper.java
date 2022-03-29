@@ -38,7 +38,10 @@ public interface BookMapper {
     @Select("SELECT bookinfo.name,bookinfo.price,bookinfo.imgpath FROM bookinfo,cart WHERE cart.uid=#{uid} AND cart.pid=bookinfo.pid")
     List<Book> getCart(@Param("uid") int uid);
 
-    //    从cart中搜索所有的pid
+    /**
+     * 从cart中搜索所有的pid
+      * @return
+     */
     @Select("SELECT pid FROM cart")
     List<Integer> getId();
 
@@ -53,7 +56,7 @@ public interface BookMapper {
     List<Integer> getId2(@Param("uid") int uid);
 
     /**
-     * 从购物车中查询商品的数量
+     * 从购物车中根据uid和pid查询商品的数量
      *
      * @param pid 商品ID
      * @param uid 用户ID
@@ -62,10 +65,37 @@ public interface BookMapper {
     @Select("SELECT count FROM cart WHERE pid=#{pid} AND uid=#{uid}")
     int getCount(@Param("pid") int pid, @Param("uid") int uid);
 
+    /**
+     * 根据书籍名称查找加入购物车中的书的数量
+     * @param name 书籍名称
+     * @param uid 用户id
+     * @return
+     */
+    @Select("SELECT count FROM cart,bookinfo WHERE bookinfo.name=#{name} AND cart.uid=#{uid} AND cart.pid=#{pid}")
+    int getCountByName(@Param("name") String name, @Param("uid") int uid);
+
     @Update("UPDATE cart SET count=#{cart.count}+1,summprice=#{cart.summprice}*count  WHERE pid=#{cart.pid} AND uid=#{cart.uid}")
     boolean updateCart(@Param("cart") Cart cart);
 
-    //    取出所有的price并求和
+    /**
+     *     取出所有的price并求和
+     */
     @Select("SELECT SUM(summprice) FROM cart WHERE uid=#{uid}")
     double getPrice(@Param("uid") int uid);
+
+    /**
+     * 根据商品pid获取商品数量
+     * @return
+     */
+    @Select("SELECT uid FROM user2 ")
+    List<Integer> getUid();
+
+    /**
+     *
+     * @param pid
+     * @return
+     */
+    @Select("SELECT name FROM bookinfo WHERE pid=#{pid} ")
+    String getName(@Param("pid") int pid);
+
 }

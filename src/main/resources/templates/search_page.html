@@ -40,21 +40,31 @@
         </div>
     </nav>
     <!--渲染画面-->
-    <div class="product"   v-for="result in results">
-        <div class="book_img">
-            <img :src="result.imgpath" width="180" height="230">
+    <div class="product"   v-for="result in results" >
+<!--        这里用v-if判断返回的result是否是error(即是否未收到结果)-->
+        <div class="search-error" v-if="result=='searcherror'">
+            <h1 style="margin-left: 12em; margin-top: 3em; color: #EA5200">抱歉，未找到相关商品，请重新搜索~
+<!--            <span style="color: #EA5200">{{ keyword }}</span>-->
+        </h1>
         </div>
-        <p class="book_name">
-            <a v-html="result.name"></a>
-        </p>
-        <div class="book-price">
-            <span>￥<span v-html="result.price"></span></span>
-        </div>
-        <p class="book-price">
-            <a v-html="result.id"></a>
-        </p>
+        <div v-else >
+            <div class="book_img">
+                <img :src="result.imgpath" width="180" height="230">
+            </div>
+            <p class="book_name">
+                <a v-html="result.name"></a>
+            </p>
+            <div class="book-price">
+                <span>￥<span v-html="result.price"></span></span>
+            </div>
+            <p class="book-price">
+                <a v-html="result.id"></a>
+            </p>
             <a class="book-operate" style="text-decoration:none" >
-            <img class="cart-img" src="images/cart.png" alt="购物车"/>加入购物车</a>
+                <img class="cart-img" src="images/cart.png" alt="购物车"/>加入购物车</a>
+        </div>
+
+
     </div>
 </div>
 <script src="js/search.js"></script>

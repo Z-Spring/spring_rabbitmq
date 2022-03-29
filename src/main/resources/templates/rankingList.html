@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图书排行榜</title>
+</head>
+<body>
+<div style="text-align: center ;margin-top: 115px">
+    <h1>图书排行榜</h1>
+    <p style="color: rebeccapurple">每分钟更新一次</p>
+    <div  th:each="rankingList:${rankingList}">
+        <div class="block">
+            <div class="bookName">
+                <a href="bookInfo" th:text="${rankingList}"></a>
+                <script>
+                    function f() {
+                        let n=0;
+                        n++;
+                    }
+                </script>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

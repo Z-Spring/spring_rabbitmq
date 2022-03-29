@@ -30,7 +30,6 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.SpringVersion;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -39,6 +38,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
 
 @SpringBootTest
 @Slf4j
@@ -196,6 +196,31 @@ public class SpringRabbitmqApplicationTests {
 
     }
 
+    @Test
+    void getCountByPid(){
+        int score=0;
+        for (int pid: bookMapper.getPidFromBookInfo()){
+            for (int uid: bookMapper.getUid()){
+                score+= bookService.getCount(pid,uid);
+            }
+            log.info("{} : {}",pid,score);
+            String productName= bookService.getName(pid);
+            redisTemplate.opsForZSet().add("rankingList",productName,score);
+            List<String> list=new ArrayList<>();
+
+            score=0;
+
+        }
+    }
+    @Test
+    void getMembers(){
+        System.out.println(redisTemplate.opsForZSet().reverseRange("rankingList", 0, 2));
+    }
+    @Test
+    @Before("execution(public *com.murphy.controller.BookController.*(..))")
+    void testMap(){
+        log.info("test AOP");
+    }
 
 }
 class MyRunnable implements Runnable{

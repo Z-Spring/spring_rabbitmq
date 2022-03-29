@@ -28,7 +28,7 @@ public class SearchController {
     @ResponseBody
     @GetMapping (value = "/search/{keyword}")
     public List searchBook(@PathVariable String keyword) throws IOException {
-        log.info("success");
+        log.info("{}",bookService.searchBook(keyword));
         return bookService.searchBook(keyword);
     }
 

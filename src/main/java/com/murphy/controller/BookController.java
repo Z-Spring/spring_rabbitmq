@@ -2,6 +2,7 @@ package com.murphy.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.murphy.mapper.BookMapper;
 import com.murphy.utils.RedisUtil;
 import com.murphy.entity.Cart;
 import com.murphy.entity.User;
@@ -21,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,6 +42,10 @@ public class BookController {
     UserController userController;
     @Autowired
     RedisTemplate redisTemplate;
+    @Autowired
+    BookMapper bookMapper;
+
+     private int incr=0;
 
     /**
      * 将商品添加到购物车
@@ -129,10 +134,20 @@ public class BookController {
      */
     public void putProductIntoRedis(String name,int pid){
         redisTemplate.opsForList().rightPush(name,pid);
-        redisTemplate.expire(name,7, TimeUnit.DAYS);
+        redisTemplate.expire(name, 7, TimeUnit.DAYS);
+
         log.info("添加pid成功");
     }
     public List getProductFromRedis(String name){
         return redisTemplate.opsForList().range(name,0,-1);
     }
+
+
+    @GetMapping("/rankingList")
+    public ModelAndView rankingList(HttpServletResponse response,HttpServletRequest request,Model model){
+        Set set = redisTemplate.opsForZSet().reverseRange("rankingList", 0, 2);
+        model.addAttribute("rankingList",set);
+        return new ModelAndView("rankingList");
+    }
+
 }
