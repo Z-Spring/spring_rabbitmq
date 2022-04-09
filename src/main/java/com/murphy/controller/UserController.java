@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.*;
 
 @Controller
@@ -59,7 +60,7 @@ public class UserController {
             int uid = userService.getUid(user.getName());
             request.setAttribute("name", bookService.getBook());
             model.addAttribute("bookList", bookService.getBook());
-            model.addAttribute("price", bookService.getPrice(uid));
+            model.addAttribute("price", NumberFormat.getCurrencyInstance(Locale.CHINA).format(bookService.getPrice(uid)));
             model.addAttribute("pid",bookController.getProductFromRedis(user.getName()));
             model.addAttribute("HasThisProduct","近期加过购物车商品");
         } else {

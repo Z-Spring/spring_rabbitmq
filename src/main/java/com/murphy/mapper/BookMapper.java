@@ -78,7 +78,7 @@ public interface BookMapper {
     boolean updateCart(@Param("cart") Cart cart);
 
     /**
-     *     取出所有的price并求和
+     *     根据uid取出所有商品的price并求和
      */
     @Select("SELECT SUM(summprice) FROM cart WHERE uid=#{uid}")
     double getPrice(@Param("uid") int uid);

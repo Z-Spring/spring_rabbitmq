@@ -41,7 +41,7 @@
     </nav>
     <!--渲染画面-->
     <div class="product"   v-for="result in results" >
-<!--        这里用v-if判断返回的result是否是error(即是否未收到结果)-->
+<!--        这里用v-if判断返回的result是否是error(即是否未收到结果)   v-if可以写表达式-->
         <div class="search-error" v-if="result=='searcherror'">
             <h1 style="margin-left: 12em; margin-top: 3em; color: #EA5200">抱歉，未找到相关商品，请重新搜索~
 <!--            <span style="color: #EA5200">{{ keyword }}</span>-->

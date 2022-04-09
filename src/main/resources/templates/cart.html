@@ -35,7 +35,8 @@
     <div class="block">
         <img width="180" height="230" th:src="${book.imgpath}" alt="图片"/><br>
         <div class="price">
-            <td th:text="'￥'+${book.price}">价格</td>
+<!--            <td th:text="'￥'+${book.price}">价格</td>-->
+            <td th:text="${#numbers.formatCurrency(book.price)}">价格</td>
             <br></div>
         <div class="book-font">
             <td th:text="${book.name}">书名</td>
