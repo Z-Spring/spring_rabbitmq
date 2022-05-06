@@ -16,7 +16,8 @@
 </header>
 <!--导航栏-->
 <div class="nav">
-    <h2>网上书城</h2>
+    <h2><a href="base" style="text-decoration: none; color: olivedrab">解忧书店</a></h2>
+
 </div>
 <!--主内容-->
 <div id="main">
@@ -33,9 +34,9 @@
             <button type="submit">注册</button><button type="reset">重置</button>
         </form>
     </div>
-    <p th:if="${message} ne null">
-    <p th:text="${message}" style="color: red">
-    </p>
+    <div th:if="${username_repeat} ne null">
+        <p th:text="${username_repeat}" style="color: red"></p>
+    </div>
     <script src="js/checkForm.js"></script>
 </div>
 <!--侧边栏-->

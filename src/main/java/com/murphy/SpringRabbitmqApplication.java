@@ -35,7 +35,8 @@ public class SpringRabbitmqApplication {
     }
 
     /**
-     * 拦截器  添加CORS跨域
+     * 拦截器 添加CORS跨域
+     *
      * @param interceptors
      * @return
      */
@@ -44,21 +45,39 @@ public class SpringRabbitmqApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
-//                for (var interceptor : interceptors) {
-//                    registry.addInterceptor(interceptor).excludePathPatterns("/register", "/login","/search/*","/test/*",
-//                            "/search_page","/base", "/**/*/*.js", "/**/*.css", "/**/*.html", "/**/*.png");
-//
-//                }
-//                registry.addInterceptor(new LoginInterceptor())
-//                        .excludePathPatterns("/register", "/login","/search/*","/test/*","/rankingList",
-//                            "/search_page","/base", "/**/*/*.js", "/**/*.css", "/**/*.html", "/**/*.png");
-//                registry.addInterceptor(new JwtInterceptor())
-//                        .excludePathPatterns("/register", "/login","/search/*","/test/*","/passToken",
-//                        "/search_page","/base", "/**/*/*.js", "/**/*.css", "/**/*.html", "/**/*.png");
+                //                for (var interceptor : interceptors) {
+                //                    registry.addInterceptor(interceptor).excludePathPatterns("/register",
+                // "/login","/search/*","/test/*",
+                //                            "/search_page","/base", "/**/*/*.js", "/**/*.css",
+                // "/**/*.html", "/**/*.png");
+                //
+                //                }
+                registry
+                        .addInterceptor(new LoginInterceptor())
+                        .excludePathPatterns(
+                                "/register",
+                                "/login",
+                                "/search/*",
+                                "/search",
+                                "/test/*",
+                                "/rankingList",
+                                "/search_page",
+                                "/base",
+                                "/**/*/*.js",
+                                "/**/*.css",
+                                "/**/*.html",
+                                "/**/*.png");
+                //                registry.addInterceptor(new JwtInterceptor())
+                //                        .excludePathPatterns("/register",
+                // "/login","/search/*","/test/*","/passToken",
+                //                        "/search_page","/base", "/**/*/*.js", "/**/*.css", "/**/*.html",
+                // "/**/*.png");
             }
+
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
+                registry
+                        .addMapping("/**")
                         .allowedOrigins("*")
                         .allowedMethods("*")
                         .allowedHeaders("*")

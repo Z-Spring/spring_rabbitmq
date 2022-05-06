@@ -6,6 +6,11 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Table;
 
+/**
+ * 购物车 Entity
+ *
+ * @author Murphy
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

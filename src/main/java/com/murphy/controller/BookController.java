@@ -1,15 +1,11 @@
 package com.murphy.controller;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.murphy.mapper.BookMapper;
 import com.murphy.utils.RedisUtil;
 import com.murphy.entity.Cart;
 import com.murphy.entity.User;
 import com.murphy.service.BookService;
 import com.murphy.service.UserService;
-import com.murphy.utils.TokenUtils;
-import io.lettuce.core.output.ListOfGenericMapsOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -60,13 +56,13 @@ public class BookController {
     @RequestMapping(value = "/cart/{pid}/{count}")
     public String addCart(@PathVariable("pid") int pid, @PathVariable("count") int count, Model model, HttpSession session, HttpServletRequest request,HttpServletResponse response) throws IOException {
         double price = bookService.getBookById(pid).getPrice();
-        List cartList1 = bookService.getId();
+        List<Integer> cartList1 = bookService.getId();
         if (session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
             int uid = userService.getUid(user.getName());
             int count2 = bookService.getCount(pid, uid);
             Cart cart = new Cart(pid, count2, price, uid);
-            List cartList2 = bookService.getId2(uid);
+            List<Integer> cartList2 = bookService.getId2(uid);
             //        list不为空写法：  !cartList1.isEmpty()
             if (count2 > 0 && !cartList1.isEmpty() && cartList1.contains(pid) && cartList2.contains(pid)) {
                 if (bookService.updateCart(cart)) {
@@ -127,10 +123,12 @@ public class BookController {
     /**
      * 用来显示用户最近是否将商品添加过购物车
      * <p></p>
+     * 近期添加过购物车提示会在7天后过期
+     * <p/>
      * 这里利用Redis的list类型，name为key ,pid为value
      * 将商品pid添加到Redis中
-     * @param name   key
-     * @param pid   value
+     * @param name   用户姓名
+     * @param pid   商品id
      */
     public void putProductIntoRedis(String name,int pid){
         redisTemplate.opsForList().rightPush(name,pid);
@@ -138,14 +136,21 @@ public class BookController {
 
         log.info("添加pid成功");
     }
-    public List getProductFromRedis(String name){
+    public List<Integer> getProductFromRedis(String name){
         return redisTemplate.opsForList().range(name,0,-1);
     }
 
-
+    /**
+     * 转发购买图书排行榜页面
+     * @param response
+     * @param request
+     * @param model
+     * @return
+     */
     @GetMapping("/rankingList")
     public ModelAndView rankingList(HttpServletResponse response,HttpServletRequest request,Model model){
-        Set set = redisTemplate.opsForZSet().reverseRange("rankingList", 0, 2);
+        Set<Integer> set = redisTemplate.opsForZSet().reverseRange("rankingList", 0, 2);
+        log.info("rankingList: {}",set);
         model.addAttribute("rankingList",set);
         return new ModelAndView("rankingList");
     }

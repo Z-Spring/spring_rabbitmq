@@ -21,12 +21,14 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.elasticsearch.common.text.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Integer.parseInt;
 
 /**
  * @author Murphy
@@ -44,7 +46,7 @@ public class BookService {
     RedisTemplate redisTemplate;
 
     public List<Book> getBook() {
-        List list = bookMapper.display();
+        List<Book> list = bookMapper.display();
         return list;
     }
 
@@ -60,13 +62,13 @@ public class BookService {
     }
 
     public List<Book> getCart(int uid) {
-        List list = bookMapper.getCart(uid);
+        List<Book> list = bookMapper.getCart(uid);
         return list;
     }
 
     public List<Integer> getId() {
         if (bookMapper.getId().isEmpty()) {
-            //设置空集合
+            // 设置空集合
             return Collections.emptyList();
         }
         return bookMapper.getId();
@@ -75,7 +77,7 @@ public class BookService {
     //    根据uid寻找pid
     public List<Integer> getId2(int uid) {
         if (bookMapper.getId2(uid).isEmpty()) {
-            //设置空集合
+            // 设置空集合
             return Collections.emptyList();
         }
         return bookMapper.getId2(uid);
@@ -87,10 +89,10 @@ public class BookService {
         }
         return 0;
     }
+
     public int getCountByName(String name, int uid) {
         if (bookMapper.getId2(uid).contains(name)) {
             return bookMapper.getCountByName(name, uid);
-
         }
         return 0;
     }
@@ -109,28 +111,29 @@ public class BookService {
         return bookMapper.getPrice(uid);
     }
 
-    public List getPidFromBookInfo(){
+    public List<Integer> getPidFromBookInfo() {
         return bookMapper.getPidFromBookInfo();
     }
 
     /**
      * 顶部搜索框请求数据
-     * @param keyword  搜索关键字
-     * @return 返回相关数据
+     *
+     * @param keyword 搜索关键字
+     * @return 返回相关数据     ?什么相关数据？说清楚5.5
      * @throws IOException
      */
     public List searchBook(String keyword) throws IOException {
-        List <Object>list=new ArrayList<>();
+        List<Object> list = new ArrayList<>();
         SearchRequest searchRequest = new SearchRequest("bookstore");
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        //模糊搜索
+        // 模糊搜索
         MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("name", keyword);
-        //bool查询
-        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
-                .should(matchQueryBuilder);
-        //高亮显示
+        // bool查询
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery().should(matchQueryBuilder);
+        // 高亮显示 目前只对name高亮显示
         HighlightBuilder highlightBuilder = new HighlightBuilder();
-        highlightBuilder.field("name")
+        highlightBuilder
+                .field("name")
                 .field("tags")
                 .preTags("<span class='test' style='color:red'>")
                 .postTags("</span>");
@@ -140,25 +143,27 @@ public class BookService {
                 .query(boolQueryBuilder)
                 .highlighter(highlightBuilder);
         searchRequest.source(searchSourceBuilder);
-        SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-        if (searchResponse.getHits().getTotalHits().value==0){
+        SearchResponse searchResponse =
+                restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        if (searchResponse.getHits().getTotalHits().value == 0) {
             log.info("can not find this product🎈");
-            List error=List.of("searcherror");
-            return error ;
-        }else{
-            for (SearchHit documentFields:searchResponse.getHits().getHits()){
-
+            List error = List.of("searchError");
+            return error;
+        } else {
+            for (SearchHit documentFields : searchResponse.getHits().getHits()) {
                 Map<String, HighlightField> highlightFields = documentFields.getHighlightFields();
                 HighlightField name = highlightFields.get("name");
                 Map<String, Object> sourceAsMap = documentFields.getSourceAsMap();
-                //解析高亮的字段，将原来的字段替换成新的高亮字段
-                if (name!=null){
+                int pid = parseInt(documentFields.getId());
+                sourceAsMap.put("pid", pid);
+                // 解析高亮的字段，将原来的字段替换成新的高亮字段
+                if (name != null) {
                     Text[] texts = name.fragments();
-                    String new_name="";
+                    String new_name = "";
                     for (Text text : texts) {
-                        new_name+=text;
+                        new_name += text;
                     }
-                    sourceAsMap.put("name",new_name);
+                    sourceAsMap.put("name", new_name);
                 }
                 list.add(documentFields.getSourceAsMap());
             }
@@ -169,23 +174,28 @@ public class BookService {
     /**
      * 近期加入购物车排行榜
      */
-    public String getName(int pid){
+    public String getName(int pid) {
         return bookMapper.getName(pid);
     }
-    @Scheduled(initialDelay = 60_000, fixedRate = 60_000)
-    public void getCountByPid(){
-        int score=0;
-        for (int pid: bookMapper.getPidFromBookInfo()){
-            for (int uid: bookMapper.getUid()){
-                score+= getCount(pid,uid);
-            }
-            log.info("{} : {}",pid,score);
-            String productName= getName(pid);
-            redisTemplate.opsForZSet().add("rankingList",productName,score);
-            score=0;
 
+    /**
+     * 排行榜功能具体实现 通过商品id获取商品已购买（加入购物车）数量
+     *
+     * <p>每分钟刷新一次 使用Redis的zset
+     *
+     * <p>key-rankinglist value-productName&score
+     */
+    @Scheduled(initialDelay = 60_000, fixedRate = 60_000)
+    public void getCountByPid() {
+        int score = 0;
+        for (int pid : bookMapper.getPidFromBookInfo()) {
+            for (int uid : bookMapper.getUid()) {
+                score += getCount(pid, uid);
+            }
+            log.info("{} : {}", pid, score);
+            String productName = getName(pid);
+            redisTemplate.opsForZSet().add("rankingList", productName, score);
+            score = 0;
         }
     }
-
-
 }

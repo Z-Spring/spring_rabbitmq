@@ -10,7 +10,10 @@ function checkForm() {
         pwd2 = $('#pwd2').val(),
         md5_pwd = document.getElementById('md5_pwd'),//TODO:这里好奇怪，用jQuery表示value为啥不行？
         message = $('#message'),
-        re = /^[\w+\.]+\@\w+\.(com|org)$/
+        // re = /^[\w+\.]+\@\w+\.(com|org)$/
+        re = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+
+        // re = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
 
     md5_pwd.value = md5(pwd1);
     // md5_pwd.val()=md5(pwd1);   不知道为啥这里这样不行
@@ -22,8 +25,10 @@ function checkForm() {
         return false;
     }
     //邮箱格式判断
+    //todo:这里一直出问题 4.19
     if (re.test(email) === false) {
-        message.text('邮箱格式不正确！').css('color', 'red');
+        console.log('邮箱格式不正确！')
+        message.text('邮箱格！').css('color', 'red');
         return false;
     }
     // 判断前后密码相同

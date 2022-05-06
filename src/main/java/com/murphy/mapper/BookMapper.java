@@ -56,7 +56,7 @@ public interface BookMapper {
     List<Integer> getId2(@Param("uid") int uid);
 
     /**
-     * 从购物车中根据uid和pid查询商品的数量
+     * 根据uid和pid,从购物车中查询商品的数量
      *
      * @param pid 商品ID
      * @param uid 用户ID
